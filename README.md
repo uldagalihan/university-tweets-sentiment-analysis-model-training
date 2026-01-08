@@ -1,4 +1,4 @@
-# 🎓 University Tweets Sentiment Analysis
+# University Tweets Sentiment Analysis
 
 > A sentiment analysis system for Turkish university student tweets using deep learning
 
@@ -8,17 +8,17 @@
 
 ---
 
-## 📖 About
+## About
 
 This project analyzes sentiment in Turkish university student tweets, classifying them as **positive** or **negative**. We collected ~11,000 tweets from 14 major Turkish universities and trained multiple deep learning models to understand student opinions about academic life, campus facilities, and administrative services.
 
-### ✨ Highlights
+### Highlights
 
-- 🏫 **14 Turkish Universities** - YTU, ODTU, BOUN, ITU, Hacettepe, Marmara, and more
-- 📊 **11K Dataset** - 5,043 real tweets + 6,150 synthetic augmented samples
-- 🤖 **5 Model Architectures** - BERTurk, Turkish ELECTRA, CNN, BiLSTM, CNN-BiLSTM
-- 🎯 **Smart Data Splitting** - MinHash clustering prevents data leakage
-- 🇹🇷 **Turkish Language Optimized** - SentencePiece tokenization for agglutinative morphology
+- 14 Turkish Universities - YTU, ODTU, BOUN, ITU, Hacettepe, Marmara, and more
+- 11K Dataset - 5,043 real tweets + 6,150 synthetic augmented samples
+- 5 Model Architectures - BERTurk, Turkish ELECTRA, CNN, BiLSTM, CNN-BiLSTM
+- Smart Data Splitting - MinHash clustering prevents data leakage
+- Turkish Language Optimized - SentencePiece tokenization for agglutinative morphology
 
 ---
 
@@ -50,7 +50,7 @@ university-tweets-sentiment-analysis-model-training/
 
 ---
 
-## 🚀 Quick Start
+## Quick Start
 
 ### Installation
 
@@ -105,29 +105,29 @@ python predict.py \
 
 ---
 
-## 📊 Dataset
+## Dataset
 
 ### Data Collection
 
 Tweets were collected from **14 Turkish universities** between **2021-2022** using the Twitter API.
 
 **Query Categories:**
-- 😠 **Strong Negative** - Complaints, dissatisfaction
-- 😊 **Strong Positive** - Praise, gratitude
-- 📚 **Academic** - Courses, professors, exams
-- 🏛️ **Administrative** - Student affairs, scholarships
-- 🏫 **Campus** - Cafeteria, library, dormitories
+- Strong Negative - Complaints, dissatisfaction
+- Strong Positive - Praise, gratitude
+- Academic - Courses, professors, exams
+- Administrative - Student affairs, scholarships
+- Campus - Cafeteria, library, dormitories
 
 ### Dataset Composition
 
 | Split | Real Tweets | Synthetic Tweets | Total |
 |-------|-------------|------------------|-------|
-| **Train** | ~4,000 | 6,150 | ~10,150 |
-| **Validation** | ~500 | 0 | ~500 |
-| **Test** | ~500 | 0 | ~500 |
-| **Total** | 5,043 | 6,150 | ~11,000 |
+| **Train** | 2,823 | 6,150 | 8,973 |
+| **Validation** | 1,110 | 0 | 1,110 |
+| **Test** | 1,110 | 0 | 1,110 |
+| **Total** | 5,043 | 6,150 | 11,193 |
 
-> ✅ **Validation and test sets contain only real tweets** to ensure unbiased evaluation
+> Validation and test sets contain only real tweets to ensure unbiased evaluation
 
 ### Data Columns
 
@@ -140,7 +140,7 @@ Tweets were collected from **14 Turkish universities** between **2021-2022** usi
 
 ---
 
-## 🤖 Models
+## Models
 
 ### Transformer Models
 
@@ -157,87 +157,31 @@ Tweets were collected from **14 Turkish universities** between **2021-2022** usi
 | **TextBiLSTM** | Bidirectional LSTM | 8,000 |
 | **TextCNNBiLSTM** | Hybrid (BiLSTM → CNN) | 8,000 |
 
-> 💡 **Why SentencePiece?** Turkish is an agglutinative language with complex morphology. SentencePiece's subword tokenization handles suffixes and inflections effectively.
+> **Why SentencePiece?** Turkish is an agglutinative language with complex morphology. SentencePiece's subword tokenization handles suffixes and inflections effectively.
 
 ---
 
-## 🔧 Data Pipeline
+## Training Features
 
-### 1️⃣ Collection (`get_tweets.py`)
-Collect tweets using Twitter API with university and sentiment-specific queries.
+All models are trained with advanced techniques to ensure robust performance:
 
-### 2️⃣ Cleaning (`cleaning.py`)
-Remove exact duplicate tweets based on text content.
-
-### 3️⃣ Splitting (`make_splits_minhash.py`)
-Create train/val/test splits using **MinHash LSH clustering** to detect near-duplicates and prevent data leakage.
-
-```bash
-python make_splits_minhash.py \
-  --input tweetDataset.xlsx \
-  --out splits \
-  --test 0.10 \
-  --val 0.10 \
-  --threshold 0.82
-```
-
-**Key Features:**
-- ✅ MinHash clustering prevents similar tweets in different splits
-- ✅ Stratified sampling maintains label distribution
-- ✅ Real-only validation/test sets
-- ✅ Configurable synthetic data ratio
-
-### 4️⃣ Training
-Train models with:
-- **Class weighting** (handles imbalanced data)
-- **Synthetic sample weighting** (reduces synthetic influence)
-- **Early stopping** (prevents overfitting)
-- **Threshold tuning** (optimizes macro-F1)
-
----
-
-## 📈 Training Features
-
-### Advanced Techniques
-
-- **Class Weighting** - Computed on real training data to handle imbalance
-- **Synthetic Sample Weighting** - Synthetic tweets have reduced loss weight (default: 0.3)
-- **Early Stopping** - Monitors validation macro-F1 with patience
-- **Threshold Tuning** - Optimizes classification threshold on validation set
-- **Learning Curves** - Visualizes training/validation loss and F1 scores
+- **Class Weighting** - Computed on real training data to handle label imbalance
+- **Synthetic Sample Weighting** - Synthetic tweets have reduced loss weight (default: 0.3) to prevent overfitting to augmented data
+- **Early Stopping** - Monitors validation macro-F1 with patience to prevent overfitting
+- **Threshold Tuning** - Optimizes classification threshold on validation set to maximize macro-F1
+- **Learning Curves** - Visualizes training/validation loss and F1 scores for model analysis
 
 ### Output Artifacts
 
 Each training run produces:
-- ✅ Best model checkpoint
-- ✅ Learning curves (loss & F1)
-- ✅ Confusion matrix
-- ✅ Production bundle (hyperparameters + threshold)
+- Best model checkpoint (selected by validation macro-F1)
+- Learning curves (loss & F1 plots)
+- Confusion matrix on test set
+- Production bundle (hyperparameters + optimal threshold)
 
 ---
 
-## 📝 Semi-Automated Labeling
-
-Use `trainForLabeling.py` to reduce manual labeling effort:
-
-```bash
-python model_training_codes/trainForLabeling.py \
-  --csv data/unlabeled.xlsx \
-  --epochs 4 \
-  --batch 16
-```
-
-This trains a preliminary model on existing labeled data and predicts labels for new tweets, which you can then review and correct.
-
----
-
-## 🔍 Data Verification
-
-All real tweets can be verified using the `url` column in `real-data.xlsx`. Simply open the URL to see the original tweet on Twitter.
-
----
-
-## 📚 Requirements
+## Requirements
 
 ```
 transformers>=4.44
@@ -254,31 +198,19 @@ sentencepiece  # For classical models
 
 ---
 
-## 🎯 Results
+## Data Verification
 
-Models are evaluated on **real-only test data** using:
-- **Accuracy**
-- **Macro F1-Score** (primary metric)
-- **Per-class Precision, Recall, F1**
-- **Confusion Matrix**
-
-All models use **threshold tuning** on the validation set to maximize macro-F1 score.
+All real tweets can be verified using the `url` column in `real-data.xlsx`. Simply open the URL to see the original tweet on Twitter.
 
 ---
 
-## 🤝 Contributing
-
-Contributions are welcome! Feel free to open issues or submit pull requests.
-
----
-
-## 📄 License
+## License
 
 This project is available for academic and research purposes.
 
 ---
 
-## 🙏 Acknowledgments
+## Acknowledgments
 
 - **Universities** - 14 major Turkish universities for data
 - **Models** - [dbmdz](https://huggingface.co/dbmdz) for BERTurk and Turkish ELECTRA
