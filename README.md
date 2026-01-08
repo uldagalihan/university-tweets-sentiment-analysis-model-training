@@ -1,5 +1,9 @@
 # University Tweets Sentiment Analysis
 
+## Contributors
+- **Emre Çelik**
+- **Alihan Uludağ**
+
 > A sentiment analysis system for Turkish university student tweets using deep learning
 
 [![Python](https://img.shields.io/badge/Python-3.8+-blue.svg)](https://www.python.org/downloads/)
@@ -215,5 +219,9 @@ This project is available for academic and research purposes.
 - **Models** - [dbmdz](https://huggingface.co/dbmdz) for BERTurk and Turkish ELECTRA
 - **Libraries** - Hugging Face, PyTorch, scikit-learn, SentencePiece
 
+## Contact
 
+For questions, suggestions, or collaboration:
+- **Emre Çelik**: GitHub [@EmreCelik23](https://github.com/EmreCelik23)
+- **Alihan Uludağ**: GitHub [@uldagalihan](https://github.com/uldagalihan)
 
