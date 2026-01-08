@@ -212,10 +212,8 @@ This project is available for academic and research purposes.
 
 ## Acknowledgments
 
-- **Universities** - 14 major Turkish universities for data
 - **Models** - [dbmdz](https://huggingface.co/dbmdz) for BERTurk and Turkish ELECTRA
 - **Libraries** - Hugging Face, PyTorch, scikit-learn, SentencePiece
 
 ---
 
-**Made with ❤️ for Turkish NLP research**
