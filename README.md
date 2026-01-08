@@ -215,5 +215,5 @@ This project is available for academic and research purposes.
 - **Models** - [dbmdz](https://huggingface.co/dbmdz) for BERTurk and Turkish ELECTRA
 - **Libraries** - Hugging Face, PyTorch, scikit-learn, SentencePiece
 
----
+
 
