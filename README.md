@@ -109,7 +109,7 @@ python predict.py \
 
 ### Data Collection
 
-Tweets were collected from **14 Turkish universities** between **2021-2022** using the Twitter API.
+Tweets were collected from **14 Turkish universities** between **2020-2025** using the Twitter API.
 
 **Query Categories:**
 - Strong Negative - Complaints, dissatisfaction
