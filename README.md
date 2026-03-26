@@ -15,20 +15,30 @@
 
 ## About
 
-This project focuses on **sentiment analysis for Turkish university-related tweets**, classifying posts as **positive** or **negative**. The dataset was collected from tweets about student life, academic processes, administrative services, and campus facilities across major Turkish universities.
+This project focuses on **sentiment analysis for Turkish university-related tweets**, classifying posts as **positive** or **negative**. The dataset was collected from tweets about student life, academic processes, administrative services, and campus facilities across major Turkish universities between 2020 and 2026.
 
-The study combines **real-world labeled tweets** with **synthetic augmented data** and evaluates multiple deep learning architectures for Turkish sentiment classification. To ensure reliable evaluation, the project uses **MinHash-based leakage-resistant data splitting**, helping reduce overlap between semantically similar tweets across train, validation, and test sets.
+The study combines **real-world labeled tweets** with **synthetic augmented data (via ChatGPT 5.2 Thinking)** and evaluates multiple deep learning architectures for Turkish sentiment classification. To ensure reliable evaluation, the project uses **MinHash-based leakage-resistant data splitting**, helping reduce overlap between semantically similar tweets across train, validation, and test sets. Furthermore, the project includes an **interactive web-based decision support system** and a comprehensive **socio-temporal analysis** linking sentiment shifts to real-world events.
 
 ---
 
 ## Highlights
 
-- **14 Turkish Universities** - Including YTU, ODTU, BOUN, ITU, Hacettepe, Marmara, and others
-- **17,188 Total Samples** - **11,020 real tweets** + **6,168 synthetic samples**
-- **5 Model Architectures** - BERTurk, Turkish ELECTRA, CNN, BiLSTM, CNN-BiLSTM
-- **Leakage-Resistant Splitting** - MinHash clustering used to reduce train/test contamination
-- **Turkish Language Optimized** - SentencePiece tokenization for classical models, transformer-based encoders for contextual learning
-- **Research + Practical Use** - Suitable for academic experiments and real-world sentiment inference
+- **14 Turkish Universities** - Including YTU, ODTU, BOUN, ITU, Hacettepe, Marmara, and others.
+- **17,188 Total Samples** - **11,020 real tweets** + **6,168 synthetic samples**.
+- **6 Model Architectures** - BERTurk, Turkish ELECTRA, TabiBERT, CNN, BiLSTM, CNN-BiLSTM.
+- **Leakage-Resistant Splitting** - MinHash LSH clustering used to strictly prevent train/test contamination.
+- **Socio-Temporal Analysis** - Analyzing sentiment fluctuations corresponding to pandemic closures, university incidents, and socio-economic changes.
+- **Interactive Web UI** - A Streamlit-based interface providing manual and batch inference for real-time monitoring.
+
+---
+
+## Interactive Web Interface
+
+The theoretical models have been integrated into a comprehensive event monitoring and decision support system built with **Streamlit**. The interface offers:
+
+1. **Manual Prediction Module:** Enter custom text to observe real-time predictions simultaneously from 6 different deep learning models.
+2. **Batch Data Analysis:** Upload `.xlsx` or `.csv` files containing thousands of tweets, allowing the system to automatically analyze and produce aggregate sentiment insights.
+3. **Analytic Dashboard:** View comprehensive performance metrics, socio-temporal graphs (e.g., hype graphs, heatmaps), and confusion matrices reflecting model training results.
 
 ---
 
@@ -38,34 +48,6 @@ The dataset is also publicly available on Kaggle:
 
 **Kaggle Dataset:**  
 [Turkish Universities Sentiment Analysis Dataset](https://www.kaggle.com/datasets/alihanuludag/turkish-universities-sentiment-analysis-dataset)
-
----
-
-## Project Structure
-
-```text
-university-tweets-sentiment-analysis-model-training/
-│
-├── get_tweets.py                              # Collect tweets from Twitter API
-├── cleaning.py                                # Remove duplicates and clean raw data
-├── make_splits_minhash.py                     # Split data using MinHash clustering
-├── predict.py                                 # Run inference on new tweets
-│
-├── model_training_codes/
-│   ├── trainForLabeling.py                    # Semi-automated labeling helper
-│   ├── train_berturk_production.py            # Train BERTurk model
-│   ├── train_turkish_electra_from_splits.py   # Train Turkish ELECTRA model
-│   └── train_classical_spm_splits.py          # Train CNN / BiLSTM / CNN-BiLSTM models
-│
-├── splits/
-│   ├── train.xlsx                             # Training split (real + synthetic)
-│   ├── val.xlsx                               # Validation split (real only)
-│   └── test.xlsx                              # Test split (real only)
-│
-├── real-data.xlsx                             # Real labeled tweet dataset
-├── tweetDataset.xlsx                          # Full combined dataset
-└── requirements.txt                           # Project dependencies
-```
 
 ---
 
@@ -134,23 +116,13 @@ python predict.py \
 
 Tweets were collected from 14 Turkish universities between 2020 and 2026 using the Twitter/X API and keyword-based queries. The collected data reflects student opinions about:
 
-- Academic life
-- Courses and exams
+- Academic life (Courses and exams)
 - Administrative services
 - Scholarships and student affairs
-- Campus facilities
-- Cafeteria, library, dormitories, and transportation
+- Campus facilities (Cafeteria, library, dormitories, transportation)
 - Complaints, dissatisfaction, praise, and appreciation
 
-### Query Categories
-
-To improve coverage and class diversity, data collection included different query groups such as:
-
-- Strong Negative
-- Strong Positive
-- Academic
-- Administrative
-- Campus
+The sentiment distribution in the organically collected real tweets demonstrates a clear skew toward complaints, yielding roughly **74.9% Negative** and **25.1% Positive** samples. 
 
 ### Dataset Composition
 
@@ -163,83 +135,52 @@ To improve coverage and class diversity, data collection included different quer
 
 Validation and test sets contain only real tweets to ensure fair and unbiased evaluation.
 
-### Data Fields
+---
 
-Main columns used in the dataset:
+## Socio-Temporal Analysis (2020-2026)
 
-- **text** - Tweet content
-- **label** - Sentiment label (0 = negative, 1 = positive)
-- **is_synth** - Indicates whether the sample is synthetic (1) or real (0)
-- **url** - Original tweet URL for verification
-- **university** - University code / source university
-- **group** - Query category used during data collection
+The project explores sentiment changes not just intrinsically but by anchoring them to real-world sociological markers:
+
+- **Pandemic and Remote Education (2020-2021):** Massive spikes in tweet volume regarding systemic remote education issues, exam anxieties, and administrative complaints.
+- **Normalization Phase (2022-2026):** Return to face-to-face learning gradually stabilized and lowered digital interaction volumes as on-campus socialization resumed.
+- **Boğaziçi University Anomaly:** A significant spike in interaction and positive sentiment unity surfaced in 2021 regarding the Boğaziçi rectorate protests, proving the power of digital social media acting as a modern "digital town square."
 
 ---
 
-## Models
+## Models & Evaluation
+
+The project compares both transformer-based and classical deep learning models on the Turkish university tweet sentiment dataset. **Turkish ELECTRA** achieved the best overall performance among the compared models.
 
 ### Transformer Models
 
-| Model | Base Model | Parameters | Max Length |
+| Model | Base Model | Accuracy | Macro-F1 |
 | :--- | :--- | :--- | :--- |
-| BERTurk | `dbmdz/bert-base-turkish-uncased` | 110M | 128 |
-| Turkish ELECTRA | `dbmdz/electra-turkish-base-discriminator` | 110M | 256 |
-| TabiBERT | Turkish BERT variant used for comparison | - | 128 |
+| Turkish ELECTRA | `dbmdz/electra-turkish-base-discriminator` | **93.34%** | **0.9094** |
+| BERTurk | `dbmdz/bert-base-turkish-uncased` | 93.04% | 0.9052 |
+| TabiBERT | `boun-tabilab/TabiBERT` | 91.77% | - |
+
+*(Note: Turkish ELECTRA reached an exceptional 95.30% recall rate specifically for negative sentiment detection, making it highly robust for real-time crisis management.)*
 
 ### Classical Deep Learning Models
 
-All classical models use SentencePiece subword tokenization.
+All classical models utilize **SentencePiece (BPE)** subword tokenization to combat the out-of-vocabulary (OOV) problem arising from Turkish's rich agglutinative morphology.
 
-| Model | Architecture | Vocab Size |
-| :--- | :--- | :--- |
-| TextCNN | Multi-kernel CNN | 8,000 |
-| TextBiLSTM | Bidirectional LSTM | 8,000 |
-| TextCNNBiLSTM | Hybrid (BiLSTM → CNN) | 8,000 |
-
-#### Why SentencePiece?
-
-Turkish is an agglutinative language, meaning words can take many suffixes and surface forms. SentencePiece helps reduce sparsity by splitting text into subword units, making classical neural models more robust to Turkish morphology.
+| Model | Architecture | Accuracy | Macro-F1 |
+| :--- | :--- | :--- | :--- |
+| TextCNNBiLSTM | Hybrid (BiLSTM → CNN) | 89.68% | 0.8590 |
+| TextBiLSTM | Bidirectional LSTM | 89.47% | 0.8480 |
+| TextCNN | Multi-kernel CNN | 88.74% | 0.8408 |
 
 ---
 
 ## Training Features
 
-To improve robustness and generalization, the training pipeline includes:
+To improve robustness and generalization, the training pipeline embraces several specialized methods:
 
-- **Class Weighting:** Handles label imbalance using weights computed from the real training data.
-- **Synthetic Sample Weighting:** Synthetic samples are assigned lower contribution in the loss function to reduce overfitting to generated data.
-- **Early Stopping:** Stops training when validation macro-F1 does not improve.
-- **Threshold Tuning:** Selects the optimal decision threshold on the validation set to maximize macro-F1.
-- **Leakage-Resistant Splits:** Uses MinHash clustering to reduce near-duplicate and semantically similar tweets appearing across different splits.
-- **Learning Curve Logging:** Tracks training/validation loss and evaluation metrics for better model analysis.
-
----
-
-## Output Artifacts
-
-Each training run produces:
-
-- Best model checkpoint
-- Evaluation metrics
-- Learning curves
-- Confusion matrix on the test set
-- Production-ready inference bundle
-- Saved threshold / hyperparameter configuration
-
----
-
-## Evaluation Summary
-
-The project compares both transformer-based and classical deep learning models on the Turkish university tweet sentiment dataset.
-
-Key experimental goals:
-
-- Measure performance on real-world university-related sentiment data
-- Compare transformer and classical architectures
-- Analyze the impact of synthetic augmentation
-- Reduce evaluation bias with leakage-resistant splitting
-
-In the study, **Turkish ELECTRA** achieved the best overall performance among the compared models.
+- **MinHash Leakage-Resistant Splits:** Uses Jaccard similarity and MinHash LSH clustering to eliminate data leakage. Near-duplicate templates and copied complaints are clustered together so the test set remains strictly distinct from the training set.
+- **Weighted Loss & LLM Augmentation:** Addresses the 75-25 class imbalance by generating minority class synthetic data using ChatGPT 5.2 Thinking. These samples are integrated alongside a custom weighted loss function (with an optimized λ=1 coefficient) dynamically scaling their influence since MinHash ensures only high-quality unique synthetic data survives.
+- **SentencePiece Tokenization:** Enhances robustness to Turkish morphology by breaking words into smaller sub-word units.
+- **Early Stopping & Threshold Tuning:** Prevents overfitting optimally checking macro-F1 convergence.
 
 ---
 
@@ -266,12 +207,6 @@ pip install -r requirements.txt
 
 ---
 
-## Data Verification
-
-All real tweets can be verified via the `url` field in `real-data.xlsx`. Opening the URL allows inspection of the original tweet on Twitter/X, when still publicly accessible.
-
----
-
 ## Reproducibility Notes
 
 For reproducible experiments:
@@ -292,8 +227,6 @@ Although the dataset is built from real university-related tweets, sentiment ana
 - Ambiguous context
 - Evolving platform language
 - Class imbalance in naturally collected data
-
-These remain important research directions for future work.
 
 ---
 
